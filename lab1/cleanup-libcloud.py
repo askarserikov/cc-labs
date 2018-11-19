@@ -2,8 +2,8 @@ from libcloud.storage.types import Provider
 from libcloud.storage.providers import get_driver
 import os
 
-ACCESS_KEY = 'AKIAJJ6ZIQOWZTQYPNCQ'
-SECRET_KEY = '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'
+ACCESS_KEY = ''
+SECRET_KEY = ''
 
 regions = ['eu-central-1', 'us-west-1', 'ap-northeast-1']
 providers = [Provider.S3_EU_CENTRAL, Provider.S3_US_WEST, Provider.S3_AP_NORTHEAST1]
