@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 2</title>
+</head>
+<body>
+    <form action = "http://127.0.0.1:5000/processing" method = "POST" enctype = "multipart/form-data">
+        <input type = "file" name = "file" /><br>
+        <input type="checkbox" name="region[]" value="eu-central-1">Frankfurt<br>
+        <input type="checkbox" name="region[]" value="us-west-1">California<br>
+        <input type="checkbox" name="region[]" value="ap-northeast-1">Tokyo<br>
+        <input type = "submit"/>
+    </form>
+    <form action = "http://127.0.0.1:5000/cleanup" method = "POST">
+        <input type = "submit" value="Cleanup"/>
+    </form>
+</body>
+</html>
