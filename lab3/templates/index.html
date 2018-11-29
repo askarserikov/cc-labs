@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Celtic</title>
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script></script>
+</head>
+<body>
+    <div id="main-div" class="pure-g" style="margin: 30px 30px 0 30px">
+        <div class="pure-u-1-5" style="text-align: center"><button id="create-ec2-instance" class="pure-button pure-button-primary">Create an EC2 instance</button></div>
+        <div class="pure-u-1-5" style="text-align: center"><button id="create-key-pair" class="pure-button pure-button-primary">Create a key pair</button></div>
+        <div class="pure-u-1-5" style="text-align: center"><button id="create-security-group" class="pure-button pure-button-primary">Create a security group</button></div>
+        <div class="pure-u-1-5" style="text-align: center"><button id="create-dashboard" class="pure-button pure-button-primary">Create a dashboard</button></div>
+        <div class="pure-u-1-5" style="text-align: center"><button id="view-dashboard" class="pure-button pure-button-primary">View a dashboard</button></div>
+    </div>
+    <p id="message-p" class="message-p"></p>
+</body>
+<script>
+$(document).ready(function() {
+    $("#create-ec2-instance").click(function () {
+        render_create_ec2_instance_form();
+    });
+
+    $("#create-key-pair").click(function () {
+        render_create_key_pair_form();
+    });
+
+    $("#create-security-group").click(function () {
+        render_create_sec_group_form();
+    });
+
+    $("#create-dashboard").click(function () {
+        render_create_dashboard_form();
+    });
+
+    $("#view-dashboard").click(function () {
+        render_view_dashboard_form();
+    });
+
+
+    function render_create_ec2_instance_form() {
+        if (!$("#form_div").length) {
+            $("#main-div").append(
+                 "<div id='form_div' style='margin: 20px auto; padding: 10px; border: solid #000055;'>" +
+                 "<form action='/ec2/create_instance' id='ec2_instance_form' class='pure-form pure-form-aligned' method='post'>" +
+                 "<fieldset>" +
+                 "<div class='pure-control-group'>" +
+                 "<label for='ami-id-field'>AMI ID</label>" +
+                 "<input id='ami-id-field' name='ami-id' type='text' value='ami-07f1aa69c7c7b01c9'>" +
+                 "</div>" +
+                 "<div class='pure-control-group'>" +
+                 "<label for='name-field'>Name</label>" +
+                 "<input id='name-field' name='name' type='text' value='celtic-ec2'>" +
+                 "</div>" +
+                 "<div class='pure-control-group'>" +
+                 "<label for='key-pair-field'>Key pair name</label>" +
+                 "<input id='key-pair-field' name='keypair' type='text' value='celtic-key-pair'>" +
+                 "</div>" +
+                 "<div class='pure-control-group'>" +
+                 "<label for='sec-group-field'>Security Group ID</label>" +
+                 "<input id='sec-group-field' name='sec-group' type='text' value='sg-01c87139714dbf6d4'>" +
+                 "</div>" +
+                 "<div class='pure-control-group'>" +
+                 "<label for='state'>Region</label>" +
+                 "<select id='region-selector' name='region'>" +
+                 "<option value='eu-central-1'>Frankfurt</option>" +
+                 "<option value='us-west-1'>California</option>" +
+                 "<option value='ap-northeast-1'>Tokyo</option>" +
+                 "</select>" +
+                 "</div>" +
+                 "<div class='pure-controls'>" +
+                 "<input id='submit-btn' class='pure-button pure-button-primary' type='submit' value='Submit'/>" +
+                 "</div>" +
+                 "</fieldset>" +
+                 "</form>" +
+                 "</div>"
+            )
+        }
+        else {
+            $("#form_div").remove()
+        }
+
+        $("#ec2_instance_form").submit(function(e){
+            $("#submit-btn").prop('disabled', true);
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(json) {
+                    $("#submit-btn").prop('disabled', false);
+                    render_message(json);
+                }
+            });
+            return false;
+        });
+    }
+
+    function render_create_key_pair_form() {
+        if (!$("#form_div").length) {
+            $("#main-div").append(
+                 "<div id='form_div' style='margin: 20px auto; padding: 10px; border: solid #000055;'>" +
+                 "<form action='/ec2/create_key_pair' id='key_pair_form' class='pure-form pure-form-aligned' method='post'>" +
+                 "<fieldset>" +
+                 "<div class='pure-control-group'>" +
+                 "<label for='keypair-field'>Key Pair Name</label>" +
+                 "<input id='keypair-field' name='keyname' type='text' value=''>" +
+                 "</div>" +
+                 "<div class='pure-control-group'>" +
+                 "<label for='state'>Region</label>" +
+                 "<select id='region-selector' name='region'>" +
+                 "<option value='eu-central-1'>Frankfurt</option>" +
+                 "<option value='us-west-1'>California</option>" +
+                 "<option value='ap-northeast-1'>Tokyo</option>" +
+                 "</select>" +
+                 "</div>" +
+                 "<div class='pure-controls'>" +
+                 "<input id='submit-btn' class='pure-button pure-button-primary' type='submit' value='Submit'/>" +
+                 "</div>" +
+                 "</fieldset>" +
+                 "</form>" +
+                 "</div>"
+            )
+        }
+        else {
+            $("#form_div").remove()
+        }
+
+        $("#key_pair_form").submit(function(){
+            $("#submit-btn").prop('disabled', true);
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(json) {
+                    $("#submit-btn").prop('disabled', false);
+                    render_message(json);
+                }
+            });
+            return false;
+        });
+    }
+
+
+    function render_create_sec_group_form() {
+        if (!$("#form_div").length) {
+            $("#main-div").append(
+                 "<div id='form_div' style='margin: 20px auto; padding: 10px; border: solid #000055;'>" +
+                 "<form action='/ec2/create_sec_group' id='sec_group_form' class='pure-form pure-form-aligned' method='post'>" +
+                 "<fieldset>" +
+                 "<div class='pure-control-group'>" +
+                 "<label for='sg-groupname'>Security Group Name</label>" +
+                 "<input id='sg-groupname' name='groupname' type='text' value=''>" +
+                 "</div>" +
+                 "<div class='pure-control-group'>" +
+                 "<label for='sg-description'>Security Group Description</label>" +
+                 "<input id='sg-description' name='description' type='text' value=''>" +
+                 "</div>" +
+                 "<div class='pure-control-group'>" +
+                 "<label for='state'>Region</label>" +
+                 "<select id='region-selector' name='region'>" +
+                 "<option value='eu-central-1'>Frankfurt</option>" +
+                 "<option value='us-west-1'>California</option>" +
+                 "<option value='ap-northeast-1'>Tokyo</option>" +
+                 "</select>" +
+                 "</div>" +
+                 "<div class='pure-controls'>" +
+                 "<input id='submit-btn' class='pure-button pure-button-primary' type='submit' value='Submit'/>" +
+                 "</div>" +
+                 "</fieldset>" +
+                 "</form>" +
+                 "</div>"
+            )
+        }
+        else {
+            $("#form_div").remove()
+        }
+
+        $("#sec_group_form").submit(function(){
+            $("#submit-btn").prop('disabled', true);
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(json) {
+                    $("#submit-btn").prop('disabled', false);
+                    render_message(json);
+                }
+            });
+            return false;
+        });
+    }
+
+
+    function render_create_dashboard_form() {
+        if (!$("#form_div").length) {
+            $("#main-div").append(
+                 "<div id='form_div' style='margin: 20px auto; padding: 10px; border: solid #000055;'>" +
+                 "<form action='/ec2/create_dashboard' id='dashboard_form' class='pure-form pure-form-aligned' method='post'>" +
+                 "<fieldset>" +
+                 "<div class='pure-control-group'>" +
+                 "<label for='db-name'>Dashboard Name</label>" +
+                 "<input id='db-name' name='name' type='text' value=''>" +
+                 "</div>" +
+                 "<div class='pure-control-group'>" +
+                 "<label for='state'>Region</label>" +
+                 "<select id='region-selector' name='region'>" +
+                 "<option value='eu-central-1'>Frankfurt</option>" +
+                 "<option value='us-west-1'>California</option>" +
+                 "<option value='ap-northeast-1'>Tokyo</option>" +
+                 "</select>" +
+                 "</div>" +
+                 "<div class='pure-controls'>" +
+                 "<input id='submit-btn' class='pure-button pure-button-primary' type='submit' value='Submit'/>" +
+                 "</div>" +
+                 "</fieldset>" +
+                 "</form>" +
+                 "</div>"
+            )
+        }
+        else {
+            $("#form_div").remove()
+        }
+
+        $("#dashboard_form").submit(function(){
+            $("#submit-btn").prop('disabled', true);
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(json) {
+                    $("#submit-btn").prop('disabled', false);
+                    render_message(json);
+                }
+            });
+            return false;
+        });
+    }
+
+
+    function render_view_dashboard_form() {
+        if (!$("#form_div").length) {
+            $("#main-div").append(
+                 "<div id='form_div' style='margin: 20px auto; padding: 10px; border: solid #000055;'>" +
+                 "<form action='/ec2/dashboard_as_images' id='view_dashboard_form' class='pure-form pure-form-aligned' method='post'>" +
+                 "<fieldset>" +
+                 "<div class='pure-control-group'>" +
+                 "<label for='instance-id-field'>Instance ID</label>" +
+                 "<input id='instance-id-field' name='name' type='text' value=''>" +
+                 "</div>" +
+                 "<div class='pure-control-group'>" +
+                 "<label for='state'>Region</label>" +
+                 "<select id='region-selector' name='region'>" +
+                 "<option value='eu-central-1'>Frankfurt</option>" +
+                 "<option value='us-west-1'>California</option>" +
+                 "<option value='ap-northeast-1'>Tokyo</option>" +
+                 "</select>" +
+                 "</div>" +
+                 "<div class='pure-controls'>" +
+                 "<input id='submit-btn' class='pure-button pure-button-primary' type='submit' value='Submit'/>" +
+                 "</div>" +
+                 "</fieldset>" +
+                 "</form>" +
+                 "</div>"
+            )
+        }
+        else {
+            $("#form_div").remove();
+            $("#images-div").remove();
+        }
+
+        $("#view_dashboard_form").submit(function(){
+            $("#submit-btn").prop('disabled', true);
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(json) {
+                    $("#submit-btn").prop('disabled', false);
+                    images = json.images;
+                    $("#main-div").append(
+                    "<div id='images-div' class='pure-g' style='margin: 10px auto'>" +
+                    "<div class='pure-u-1-2' style='text-align: center'>" +
+                    "<img src='data:image/png;base64," + images[0] + "' >" +
+                    "</div>" +
+                    "<div class='pure-u-1-2' style='text-align: center'>" +
+                    "<img src='data:image/png;base64," + images[1] + "' >" +
+                    "</div>" +
+                    "<div class='pure-u-1-2' style='text-align: center'>" +
+                    "<img src='data:image/png;base64," + images[2] + "' >" +
+                    "</div>" +
+                    "<div class='pure-u-1-2' style='text-align: center'>" +
+                    "<img src='data:image/png;base64," + images[3] + "' >" +
+                    "</div>" +
+                    "</div>"
+                )
+                }
+            });
+            return false;
+        });
+    }
+
+
+    function render_message(json){
+            if (json.type === 'error'){
+                $("#message-p").css("background-color", "#FF4848");
+            } else {
+                $("#message-p").css("background-color", "#1e95f4");
+            }
+            $("#message-p").text(json.message);
+            $(function() {
+                $('#message-p').delay(100).fadeIn('normal', function() {
+                    $(this).delay(6000).fadeOut();
+                });
+            });
+    }
+});
+</script>
+</html>
