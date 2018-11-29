@@ -7,12 +7,12 @@ import boto3
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/s3")
 def hello():
     return render_template('file_picker.html')
 
 
-@app.route("/processing", methods=['POST'])
+@app.route("s3/processing", methods=['POST'])
 def processing():
     output = []
     file = request.files['file'].read()
@@ -43,7 +43,7 @@ def processing():
     return s
 
 
-@app.route("/cleanup", methods=['POST'])
+@app.route("s3/cleanup", methods=['POST'])
 def cleanup():
     regions = ['eu-central-1', 'us-west-1', 'ap-northeast-1']
     output = []
@@ -64,3 +64,4 @@ def cleanup():
     output.append('Done')
     s = "<br>".join(output)
     return s
+
